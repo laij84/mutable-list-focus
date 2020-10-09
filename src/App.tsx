@@ -1,26 +1,44 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { ListItem } from './components/ListItem/ListItem'
+
+export const App: React.FC = () => {
+    const [list, setList] = useState([
+        'Build app',
+        'Improve accessibility',
+        'Write gists',
+        'Write article',
+        'Publish story',
+    ])
+
+    const [status, setStatus] = useState('')
+
+    const handleDelete = (text: string) => {
+        setList((prevState) => prevState.filter((item) => item !== text))
+        setStatus(`Todo "${text}" deleted.`)
+    }
+
+    return (
+        <>
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault()
+                    const todo = e.currentTarget.todo.value
+                    setList((prevState) => [...prevState, todo])
+                    setStatus(`Todo "${todo}" added.`)
+                }}
+            >
+                <label htmlFor="todo">Enter a todo</label>
+                <input type="text" name="todo" id="todo" />
+            </form>
+
+            <p role="status">{status}</p>
+
+            <ol tabIndex={-1}>
+                {list.map((item) => (
+                    <ListItem key={item} text={item} handleDelete={handleDelete} />
+                ))}
+            </ol>
+        </>
+    )
 }
-
-export default App;
